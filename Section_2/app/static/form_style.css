@@ -1,0 +1,60 @@
+.displayBox {
+    width: 100%; 
+    margin: 2vmax auto; 
+    padding-left: 2vmax;
+    padding-right: 2vmax;
+    padding-top: 1vmax;
+    padding-bottom: 1vmax;
+    background-color: #fffaf3; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    font-family: "Lato", sans-serif; 
+}
+
+.displayBox label {
+    display: block;
+    font-weight: 700; 
+    margin-bottom: 8px;
+    color: #3f2a22;
+}
+
+
+textarea { 
+    width: 100%; 
+    padding: 0.5vmax;
+    margin-bottom: 0.5vmax;
+    border: 1px solid #ccc;
+    border-radius: 4px; 
+    font-size: 1vmax;
+    box-sizing: border-box;
+}
+
+
+input[type="submit"] {
+    display: block;
+    width: 100%; 
+    padding: 0.5vmax;
+    background-color: #e23d48;;
+    color: white; 
+    border: none;
+    border-radius: 4px; 
+    cursor: pointer;
+    font-family: "Lato", sans-serif;
+    font-size: 1vmax;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #c53039; /
+}
+
+ul {
+    margin-top: 0.7vmax;
+    padding-left: 0;
+    list-style-type: none;
+}
+
+li {
+    margin-bottom: 0.5vmax;
+}

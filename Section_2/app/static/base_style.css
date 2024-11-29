@@ -1,3 +1,75 @@
-.body {
-    
+:root {
+    --bg_color:#f4e9d4;
+    --text_colour:#56355a;
+    --button_bg_colour: #ddcfb5;
+    --button_color:#56355a;
+    --alt_text_colour:#f4e9d4;
+}
+
+body {
+    background-color: var(--bg_color);
+    color: var(--text_colour);
+    font-family: "Lexend Deca", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 2em;
+}
+
+h2 {
+    font-family: "Lato", sans-serif;
+    font-weight: 800;
+    font-size: 1em;
+    color: #3f2a22;
+}
+
+
+p {
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-size: 0.7em;
+    color: #3f2a22;
+}
+
+
+
+.container {
+    padding: 1em;
+}
+
+#navigationBar {
+    background-color: var(--button_bg_colour);
+    color: var(--text_colour);
+    font-size: 1em;
+    cursor: pointer;
+}
+
+#navigationText {
+    font-size:1.3em;
+    color: var(--text_colour);
+    margin-left: 1em;
+}
+
+#navigationBar ul li a {
+    margin-right: 1em;
+    margin-left: 1em;
+    text-decoration: none;
+    font-size: 0.8em;
+    transition: background-color 0.1s ease;
+    transition: color 0.1s ease;
+    color: var(--text_colour)
+}
+
+
+#navigationBar ul li a:hover {
+    background-color: var(--button_color);
+    color:var(--alt_text_colour)
+}
+
+#overlayedContainer {
+    color:var(--bg_color);
+    background-color: aliceblue;
+    padding:1em;
+    display:flex;
+    text-align: center;
 }
