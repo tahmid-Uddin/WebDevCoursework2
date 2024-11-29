@@ -1,0 +1,7 @@
+-- database: ./app.db
+DROP TABLE alembic_version;
+DROP TABLE user;
+DROP TABLE listing;
+DROP TABLE image;
+DROP TABLE cart;
+DROP TABLE wishlist_table;

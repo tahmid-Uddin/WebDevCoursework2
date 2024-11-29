@@ -42,6 +42,7 @@ p {
     color: var(--text_colour);
     font-size: 1em;
     cursor: pointer;
+    transition: background-color 10s ease;
 }
 
 #navigationText {
@@ -51,12 +52,11 @@ p {
 }
 
 #navigationBar ul li a {
-    margin-right: 1em;
+    margin-right: 0.35em;
     margin-left: 1em;
     text-decoration: none;
     font-size: 0.8em;
-    transition: background-color 0.1s ease;
-    transition: color 0.1s ease;
+    transition: background-color 0.2s ease, color 0.2s ease; 
     color: var(--text_colour)
 }
 
@@ -72,4 +72,37 @@ p {
     padding:1em;
     display:flex;
     text-align: center;
+}
+
+#login_signup_form {
+    width: 100%; 
+    margin: 1em auto; 
+    padding: 1em;
+    background-color: #fffaf3; 
+    border-radius: 0.5em; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.form-group {
+    padding-top: 0.5em;
+}
+
+.error-message {
+    font-style: italic;
+    color: red;
+    font-size: 0.5em;
+    margin: 0;
+}
+
+
+.btn-primary {
+    background-color: var(--button_bg_colour);
+    color: var(--text_colour);
+    border-color: var(--button_bg_colour);
+}
+
+.btn-primary:hover {
+    background-color: var(--button_color);
+    color:var(--alt_text_colour);
+    border-color: var(--button_color);
 }

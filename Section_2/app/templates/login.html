@@ -1,26 +1,36 @@
 {% extends "base.html" %}
+
 {% block content %}
-    <nav class="navbar navbar-expand-lg navbar-dark" id="navigationBar">
 
-        <a class="navbar-brand" href="#" id = "navigationText">thePetShop</a>
+{% include 'nav_bar.html' %}
+    <div class= "container">
+        <div>
+            <form id = "login_signup_form"  action="" method="post">
+                {{ form.csrf_token }}
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    <h2><label for="email">Email address</label></h2>
+                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="name@example.com">
+                    <small id="emailHelp" class="form-text text-muted"><p>We'll never share your email with anyone else.</p></small>
+                </div>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+                <div class="form-group">
+                    <h2><label for="password">Password</label></h2>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
 
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                <a class="nav-link" href="/accessories">Accessories</a>
-                </li>
-                <li class="nav-item active">
-                <a class="nav-link" href="/">Adoption</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/login">Log In</a>
-                </li>
-            </ul>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages%}
+                        <p class="error-message">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
-    </nav>
+    </div>
 
 {% endblock %} 

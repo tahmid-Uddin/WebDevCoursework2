@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    {% include 'nav_bar.html' %}
+    <div class= "container">
+        <div>
+            <form id = "login_signup_form" action="" method="post">
+                {{ form.csrf_token }}
+                {{ form.hidden_tag() }}
+
+                <h2><label for="Name">Full Name</label></h2>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name">
+                        {% for error in form.firstName.errors %}
+                            <p class="error-message">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                
+                    <div class="col-md-6 mb-4">
+                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name">
+                        {% for error in form.lastName.errors %}
+                            <p class="error-message">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    
+                </div>
+                
+                <div class="form-group">
+                    <h2><label for="email">Email address</label></h2>
+                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="name@example.com">
+                    <small id="emailHelp" class="form-text text-muted"><p style="margin:0;">We'll never share your email with anyone else.</p></small>
+
+                    {% for error in form.email.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <h2><label for="password">Password</label></h2>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+
+                    {% for error in form.password.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <h2><label for="passwordConfirmation">Confirm Password</label></h2>
+                    <input type="password" class="form-control" id="passwordConfirmation" name="passwordConfirmation" placeholder="Re-enter Password">
+                </div>
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages%}
+                        <p class="error-message">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %} 
