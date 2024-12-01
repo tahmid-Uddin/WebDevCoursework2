@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light" id="navigationBar">
 
-    <a class="navbar-brand" href="#" id = "navigationText">thePetShop</a>
+    <a class="navbar-brand" href="/" id = "navigationText">thePetShop</a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -19,11 +19,11 @@
             
             {% if user.is_authenticated %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="/account">Account</a>
+                    <a class="nav-link" href="/cart">Cart</a>
                 </li>
 
                 <li class="nav-item active">
-                    <a class="nav-link" href="/logout">Logout</a>
+                    <a class="nav-link" href="/account">Account</a>
                 </li>
             {% else %}
                 <li class="nav-item active">

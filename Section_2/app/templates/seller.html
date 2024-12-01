@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include 'nav_bar.html' %}
+    <div class= "container">
+        <div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alter-dismissable fade show" role="alert">{{ message }}
+                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if not seller %}
+            <form id="form_template" action="" method="post">
+                {{ sellerForm.csrf_token }}
+                {{ sellerForm.hidden_tag() }}
+                <h1>Seller Registration</h1>
+
+                <div class="form-group">
+                    <h2><label for="businessName">Business Name</label></h2>
+                    <input type="text" class="form-control" id="businessName" name="businessName" placeholder="Business name">
+                    {% for error in sellerForm.businessName.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <h2><label for="businessPhone">Business Phone Number</label></h2>
+                    <input type="tel" class="form-control" id="businessPhone" name="businessPhone" placeholder="Business contact number">
+                    {% for error in sellerForm.businessPhone.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <h2><label for="businessEmail">Business Email</label></h2>
+                    <input type="email" class="form-control" id="businessEmail" name="businessEmail" placeholder="Business email address">
+                    {% for error in sellerForm.businessEmail.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <h2><label for="businessAddress">Business Address</label></h2>
+                    <input type="text" class="form-control" id="businessAddress" name="businessAddress" placeholder="Business address">
+                    {% for error in sellerForm.businessAddress.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <h2><label for="country">Country</label></h2>
+                    <input type="text" class="form-control" id="country" name="country" placeholder="Country of operation">
+                    {% for error in sellerForm.country.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Register as Seller</button>
+            </form>
+
+            {% else %}
+
+            <div id="form_template" style="text-align:center;">
+                <h1>Welcome to Your Seller Dashboard</h1>
+                <p>Here you can manage your business and products. You can create new listings, amend and delete existing ones, and change your business information.</p>
+                <p><em>Tip: Click on the title of each section to expand or collapse it for easy navigation.</em></p>
+            </div>
+
+
+            <div id="form_template">
+                <a id="collapseable_text" data-toggle="collapse" href="#collapseNewListings" role="button" aria-expanded="true" aria-controls="collapseNewListings">
+                    <h1>Create New Listing</h1>
+                </a>
+                <div class="collapse show" id="collapseNewListings">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {{ listingForm.csrf_token }}
+                        {{ listingForm.hidden_tag() }}
+                        
+                        <div class="form-group">
+                            <h2><label for="name">Product Title</label></h2>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Title">
+                            {% for error in listingForm.name.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <h2><label for="description">Description</label></h2>
+                            <textarea style="width:100%; height:5em;" class="form-control" id="description" name="description" placeholder="Description"></textarea>
+                            {% for error in listingForm.description.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <h2><label for="stock">Stock Quantity</label></h2>
+                            <input type="number" class="form-control" id="stock" name="stock" placeholder="Quantity">
+                            {% for error in listingForm.stock.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <h2><label for="price">Price</label></h2>
+                            <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="XX.XX">
+                            {% for error in listingForm.stock.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <h2><label for="category">Product Category</label></h2>
+                            <select class="custom-select" id="category" name="category" style="font-size:0.5em;">
+                                <option value="adoption"><p>Adoption</p></option>
+                                <option value="accessory"><p>Accessories</p></option>
+                            </select>
+                            {% for error in listingForm.category.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+    
+                        <div class="form-group">
+                            <h2><label for="image">Product Images</label></h2>
+                            <h2 style="font-size:0.5em; font">
+                                <input type="file" class="form-control-file" id="image" name="image" multiple accept="image/*">
+                            </h2>
+                            {% for error in listingForm.image.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+    
+                        <button type="submit" name="submitNewListing" class="btn btn-primary">Create Listing</button>
+                    </form>
+                </div>
+            </div>
+    
+            <div id="form_template">
+                <a id="collapseable_text" data-toggle="collapse" href="#collapseCurrentListings" role="button" aria-expanded="true" aria-controls="collapseCurrentListings">
+                    <h1>Manage Current Listings</h1>
+                </a>
+                <div class="collapse show" id="collapseCurrentListings">
+                    {% if listings %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for listing in listings %}
+                                <tr>
+                                    <td>{{ listing.name }}</td>
+                                    <td>{{ listing.category }}</td>
+                                    <td>${{ listing.price }}</td>
+                                    <td>{{ listing.stock }}</td>
+                                    <td>
+                                        <form action="{{ url_for('delete_listing', listing_id=listing.product_id) }}" method="post" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this listing?');">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>You have no current listings.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="form_template">
+                <a id="collapseable_text" data-toggle="collapse" href="#collapseBusinessDetails" role="button" aria-expanded="true" aria-controls="collapseBusinessDetails"><h1>Update Business Details</h1></a>
+                <div class="collapse show" id="collapseBusinessDetails">
+                    <form action="" method="post">
+                        {{ sellerForm.csrf_token }}
+                        {{ sellerForm.hidden_tag() }}
+                        
+                        <div class="form-group">
+                            <h2><label for="businessName">Business Name</label></h2>
+                            <input type="text" class="form-control" id="businessName" name="businessName" value="{{ seller.business_name }}">
+                            {% for error in sellerForm.businessName.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <h2><label for="businessPhone">Business Phone Number</label></h2>
+                            <input type="tel" class="form-control" id="businessPhone" name="businessPhone" value="{{ seller.business_phone }}">
+                            {% for error in sellerForm.businessPhone.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <h2><label for="businessEmail">Business Email</label></h2>
+                            <input type="email" class="form-control" id="businessEmail" name="businessEmail" value="{{ seller.business_email }}">
+
+                            {% for error in sellerForm.businessEmail.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <h2><label for="businessAddress">Business Address</label></h2>
+                            <input type="text" class="form-control" id="businessAddress" name="businessAddress" value="{{ seller.business_address }}">
+
+                            {% for error in sellerForm.businessAddress.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <h2><label for="country">Country</label></h2>
+                            <input type="text" class="form-control" id="country" name="country" value="{{ seller.country }}">
+                            {% for error in sellerForm.country.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <button type="submit" name="submitBusinessDetails" class="btn btn-primary">Update Details</button>
+                    </form>
+                </div>
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
+{% endblock %} 

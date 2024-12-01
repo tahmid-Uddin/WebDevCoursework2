@@ -5,3 +5,4 @@ DROP TABLE listing;
 DROP TABLE image;
 DROP TABLE cart;
 DROP TABLE wishlist_table;
+DROP TABLE seller;

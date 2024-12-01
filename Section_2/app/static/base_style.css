@@ -16,6 +16,11 @@ body {
     font-size: 2em;
 }
 
+h1 {
+    margin-bottom:0.5em;
+}
+
+
 h2 {
     font-family: "Lato", sans-serif;
     font-weight: 800;
@@ -66,15 +71,22 @@ p {
     color:var(--alt_text_colour)
 }
 
-#overlayedContainer {
-    color:var(--bg_color);
-    background-color: aliceblue;
-    padding:1em;
-    display:flex;
-    text-align: center;
+#large_button {
+    width:100%;
+    font-size: 1em;
+    padding: 0.5em 1em;
+    border-radius: 0.5em;
 }
 
-#login_signup_form {
+#collapseable_text {
+    color:var(--text_colour)
+}
+
+#collapseable_text:hover {
+    color:#3b253d;
+}
+
+#form_template {
     width: 100%; 
     margin: 1em auto; 
     padding: 1em;
@@ -83,6 +95,7 @@ p {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
+
 .form-group {
     padding-top: 0.5em;
 }
@@ -90,6 +103,14 @@ p {
 .error-message {
     font-style: italic;
     color: red;
+    font-size: 0.5em;
+    margin: 0;
+}
+
+
+.success-message {
+    font-style: italic;
+    color: green;
     font-size: 0.5em;
     margin: 0;
 }

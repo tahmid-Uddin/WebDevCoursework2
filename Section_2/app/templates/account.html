@@ -1,0 +1,111 @@
+    {% extends "base.html" %}
+
+    {% block content %}
+
+    {% include 'nav_bar.html' %}
+        <div class= "container">
+            <div id = "form_template">
+                {% if not seller%}
+                    <h1>Become a Seller Today!</h1>
+                    <!-- AI generated paragraph: (only text in <p> tag, not code)-->
+                    <!-- prompt: I want to incentivise people to become a seller for my website. The website is called thePetShop, and the seller can either put up pets for adoption, or sell pet accessories. Write a short paragraph, 3 lines max, with the heading "Become a seller Today!"-->
+                    <p style="text-align:center;">Turn your passion for pets into profit with thePetShop! Whether you're a breeder looking to find loving homes for adorable pets or a pet accessory creator wanting to reach animal lovers nationwide, our platform is your perfect marketplace. Join now and connect with thousands of pet enthusiasts seeking exactly what you have to offer!</p>
+                    <!-- end of AI generated content -->
+                    <a class="nav-link" href="/seller" style="display:flex; justify-content:center;"><button class="btn btn-primary" href="/register_as_seller">Register as a Seller</button></a>
+                {% else %}
+                    <a class="nav-link" href="/seller" style="display:flex; justify-content:center;">
+                        <button class="btn btn-primary" id = "large_button">Go to Seller Dashboard</button>
+                    </a>
+                {% endif %}
+            </div>
+
+            <div>
+                <form id = "form_template"  action="" method="post">
+                    {{ form.csrf_token }}
+                    {{ form.hidden_tag() }}
+                    <h1>Account Details</h1>
+                    
+                    <h2><label for="Name">Full Name</label></h2>
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <input type="text" class="form-control" id="firstName" name="firstName" value="{{ user.first_name }}">
+                            {% for error in form.firstName.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-md-4 mb-2">
+                            {% if user.middle_name != None %}
+                                <input type="text" class="form-control" id="middleName" name="middleName" value="{{ user.middle_name }}">
+                            {% else %}
+                                <input type="text" class="form-control" id="middleName" name="middleName" placeholder="Middle Name">
+                            {% endif %}
+
+                            {% for error in form.middleName.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    
+                        <div class="col-md-4 mb-2">
+                            <input type="text" class="form-control" id="lastName" name="lastName" value="{{ user.last_name }}">
+                            {% for error in form.lastName.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <h2><label for="email">Email address</label></h2>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <h2><label for="phoneNumber">Phone Number</label></h2>
+                        {% if user.phone_number != None %}
+                            <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ user.phone_number }}">
+                        {% else %}
+                            <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
+                        {% endif %}
+
+                        {% for error in form.phoneNumber.errors %}
+                            <p class="error-message">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <h2><label for="address">Home Address</label></h2>
+                        {% if user.address != None %}
+                            <input type="text" class="form-control" id="address" name="address" value="{{ user.address }}">
+                        {% else %}
+                            <input type="text" class="form-control" id="address" name="address" placeholder="Home Address">
+                        {% endif %}
+
+                        {% for error in form.address.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                    </div>
+
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages%}
+                            <p class="success-message">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
+                    <button type="submit" class="btn btn-primary">Update Details</button>
+                </form> 
+            </div>
+
+            <div id = "form_template">
+                <a class="nav-link" href="/logout" style="display:flex; justify-content:center;">
+                    <button class="btn btn-primary" id = "large_button">Log Out</button>
+                </a>
+            </div>
+            
+        </div>
+
+        
+
+    {% endblock %} 

@@ -5,7 +5,7 @@
     {% include 'nav_bar.html' %}
     <div class= "container">
         <div>
-            <form id = "login_signup_form" action="" method="post">
+            <form id = "form_template" action="" method="post">
                 {{ form.csrf_token }}
                 {{ form.hidden_tag() }}
 
@@ -25,13 +25,11 @@
                         {% endfor %}
                     </div>
 
-                    
                 </div>
                 
                 <div class="form-group">
                     <h2><label for="email">Email address</label></h2>
-                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="name@example.com">
-                    <small id="emailHelp" class="form-text text-muted"><p style="margin:0;">We'll never share your email with anyone else.</p></small>
+                    <input type="email" class="form-control" id="email" name="email"placeholder="name@example.com">
 
                     {% for error in form.email.errors %}
                         <p class="error-message">{{ error }}</p>
