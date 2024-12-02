@@ -5,10 +5,10 @@
         <div class="row">
             {% for product in products %}
             <div class="col-lg-4 col-md-6 mb-4">
-                <a href="#" style="text-decoration: none;">
+                <a href="{{ url_for('listing_page', listing_id=product.product_id) }}" style="text-decoration: none;">
                     <div class="card h-100" id="card">
                         <div style="height: 6em; overflow: hidden; margin:0.2em;">
-                            <img src="../static/{{ product.image }}" class="card-img-top" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: contain;">
+                            <img src="../static/{{ product.images[0] }}" class="card-img-top" alt="{{ product.name }}" id="image_fit">
                         </div>
                         <div class="card-body" >
                             <h2>

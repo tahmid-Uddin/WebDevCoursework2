@@ -6,15 +6,15 @@ from flask_babel import Babel
 from flask_login import LoginManager
 
 def get_locale():
-    if request.args.get('lang'):
-        session['lang'] = request.args.get('lang')
-    return session.get('lang', 'en')
+    if request.args.get("lang"):
+        session["lang"] = request.args.get("lang")
+    return session.get("lang", "en")
 
 app = Flask(__name__)
-app.config.from_object('config')
+app.config.from_object("config")
 
 babel = Babel(app, locale_selector=get_locale)
-admin = Admin(app, template_mode='bootstrap4')
+admin = Admin(app, template_mode="bootstrap4")
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager()

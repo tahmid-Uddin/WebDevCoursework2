@@ -15,7 +15,8 @@ def ValidateFirstName():
         if field.data == None:
             raise ValidationError(message)
         
-        if not re.match(r'^[A-Za-z\s]+$', field.data):
+        #No numbers or punctuation in name
+        if not re.match(r"^[A-Za-z\s]+$", field.data):
             raise ValidationError(message)
         
     return _ValidateFirstName
@@ -24,9 +25,11 @@ def ValidateLastName():
     message = "Name contains invalid characters."
 
     def _ValidateLastName(form, field):
-        if not re.match(r'^[A-Za-z\s]+$', field.data):
+        #No numbers or punctuation in name
+        if not re.match(r"^[A-Za-z\s]+$", field.data):
             raise ValidationError(message)
         
+        #Last name can only be one word
         if len(field.data.split(" ")) != 1:
             raise ValidationError(message)
         
@@ -39,7 +42,9 @@ def ValidatePhoneNumber():
     def _ValidatePhoneNumber(form, field):
         if field.data:
             number = field.data.strip()
+            #Country code given - phonenumbers.parse doesn't work on numbers without country code
             if number[0] == "+":
+                #Checks if the rest of the phone number contains only numbers
                 try:
                     number_int = int(number[1:])
                 except:
@@ -68,6 +73,23 @@ def ValidatePassword():
         
 
     return _ValidatePassword
+
+
+def ValidateNumber():
+    #Exampl3P@ssw0rd!
+    message = "Number can't be negative."
+
+    def _ValidateNumber(form, field):
+        try:
+            number = int(field.data)
+        except:
+            raise ValidationError(message)
+        
+        if number < 0:
+            raise ValidationError(message)
+        
+
+    return _ValidateNumber
 
 
 class SignUpForm(FlaskForm):
@@ -102,7 +124,7 @@ class SellerRegistrationForm(FlaskForm):
 class CreateListingForm(FlaskForm):
     name = wtforms.StringField(validators=[DataRequired()])
     description = wtforms.TextAreaField(validators=[DataRequired()])
-    stock = wtforms.IntegerField(validators=[DataRequired()])
-    price = wtforms.FloatField(validators=[DataRequired()])
+    stock = wtforms.IntegerField(validators=[DataRequired(), ValidateNumber()])
+    price = wtforms.FloatField(validators=[DataRequired(), ValidateNumber()])
     category = wtforms.StringField(validators=[DataRequired()])
-    image = FileField('Product Images', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    image = FileField("Product Images", validators=[FileAllowed(["jpg", "png", "jpeg"])])

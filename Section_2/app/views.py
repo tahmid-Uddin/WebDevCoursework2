@@ -15,24 +15,65 @@ admin.add_view(ModelView(Image, db.session))
 admin.add_view(ModelView(Cart, db.session))
 admin.add_view(ModelView(Seller, db.session))
 
-@app.route('/')
+@app.route("/")
 def home():
-    products = [
-    {"name": "Dog", "price": 10.99, "in_stock": True, "image": "images/dog_collar.jpg"},]
-    return render_template('adoption.html', products=products, user=current_user)
+    return redirect(url_for("adoption"))
+
+def get_products(category):
+    listings = Listing.query.filter_by(category=category).all()
+    products = []
+    for listing in listings:
+        product = {
+            "product_id": listing.product_id,
+            "name": listing.name,
+            "price": listing.price,
+            "in_stock": listing.stock > 0,
+            "images": []
+        }
+        
+        images = Image.query.filter_by(product_id=listing.product_id).all()
+        for image in images:
+            product["images"].append(image.url)
+            
+        products.append(product)
+    
+    return products
+
+@app.route("/adoption")
+def adoption():
+    products = get_products("adoption")
+    
+    return render_template("view_products.html", products=products, user=current_user)
 
 
-@app.route('/accessories', methods=['GET', 'POST'])
+@app.route("/accessories", methods=["GET", "POST"])
 def accessories():
-    products = [
-    {"name": "Dog Collar", "price": 10.99, "in_stock": True, "image": "images/dog_collar.jpg"},
-    {"name": "Cat Toy", "price": 5.49, "in_stock": False, "image": "images/cat_toy.jpg"},
-    {"name": "Bird Cage", "price": 50.00, "in_stock": True, "image": "images/bird_cage.jpg"}
-    ]
-    return render_template('accessories.html', products=products, user=current_user)
+    products = get_products("accessory")
+    
+    return render_template("view_products.html", products=products, user=current_user)
 
 
-@app.route('/account', methods=['GET', 'POST'])
+@app.route("/adoption/<int:listing_id>", methods=["POST", "GET"])
+@app.route("/accesory/<int:listing_id>", methods=["POST", "GET"])
+def listing_page(listing_id):
+    listing = Listing.query.filter_by(product_id=listing_id).first()
+    seller = Seller.query.filter_by(id=listing.seller_id).first()
+    product = {"product_id": listing.product_id,
+               "name": listing.name,
+               "description": listing.description,
+               "price": listing.price,
+               "in_stock": listing.stock > 0,
+               "quantity": listing.stock,
+               "images": []}
+    
+    images = Image.query.filter_by(product_id=listing.product_id).all()
+    for image in images:
+        product["images"].append(image.url)
+
+    return render_template("listing_page.html", product=product, seller=seller, user=current_user, image_count=len(product["images"]))
+
+
+@app.route("/account", methods=["GET", "POST"])
 @login_required
 def account():
     updateUserForm = UpdateUserForm()
@@ -52,20 +93,20 @@ def account():
             user.address = updateUserForm.address.data
             
         db.session.commit()
-        flash("Details updated Successfully")
+        flash("Details updated Successfully", category="success")
         return redirect(url_for("account"))
         
-    if request.method == 'GET':
+    if request.method == "GET":
         updateUserForm.firstName.data = user.first_name
         updateUserForm.middleName.data = user.middle_name
         updateUserForm.lastName.data = user.last_name
         updateUserForm.phoneNumber.data = user.phone_number
         updateUserForm.address.data = user.address
         
-    return render_template('account.html', form=updateUserForm, sellerForm=sellerForm, user=current_user, seller=seller)
+    return render_template("account.html", form=updateUserForm, sellerForm=sellerForm, user=current_user, seller=seller)
 
 
-@app.route('/seller', methods=['GET', 'POST'])
+@app.route("/seller", methods=["GET", "POST"])
 @login_required
 def seller():
     sellerForm = SellerRegistrationForm()
@@ -73,7 +114,7 @@ def seller():
     seller = Seller.query.filter_by(user_id=current_user.id).first()
     user = User.query.get(current_user.id)
 
-    if 'submitBusinessDetails' in request.form:
+    if "submitBusinessDetails" in request.form:
         if sellerForm.validate_on_submit():
             if seller:
                 seller.business_name = sellerForm.businessName.data
@@ -97,7 +138,7 @@ def seller():
             flash("Error updating business details", category="error")
         
 
-    if 'submitNewListing' in request.form:
+    if "submitNewListing" in request.form:
         if listingForm.validate_on_submit():
             new_listing = Listing(seller_id=seller.id,
                                   name=listingForm.name.data,
@@ -109,13 +150,13 @@ def seller():
             db.session.add(new_listing)
             db.session.commit()
 
-            if request.files.getlist('image'):
-                upload_dir = os.path.join('app', 'static', 'product_images')
+            if request.files.getlist("image"):
+                upload_dir = os.path.join("app", "static", "product_images")
                 
                 if not os.path.exists(upload_dir):
                     os.makedirs(upload_dir)
                 
-                for file in request.files.getlist('image'):
+                for file in request.files.getlist("image"):
                     if file:
                         filename = secure_filename(file.filename)
                         file_path = os.path.join(upload_dir, filename)
@@ -123,7 +164,7 @@ def seller():
                         
                         try:
                             new_image = Image(product_id=new_listing.product_id,
-                                            url=os.path.join('product_images', filename))
+                                            url=os.path.join("product_images", filename))
                             db.session.add(new_image)
                         except:
                             flash("Error creating new listing: failed image upload.", category="error")
@@ -148,9 +189,9 @@ def seller():
         sellerForm.businessAddress.data = seller.business_address
         sellerForm.country.data = seller.country
 
-    return render_template('seller.html', sellerForm=sellerForm, listingForm=listingForm, user=user, seller=seller, listings=existing_listings)
+    return render_template("seller.html", sellerForm=sellerForm, listingForm=listingForm, user=user, seller=seller, listings=existing_listings)
 
-@app.route('/delete_listing/<int:listing_id>', methods=['POST'])
+@app.route("/delete_listing/<int:listing_id>", methods=["POST"])
 @login_required
 def delete_listing(listing_id):
     listing = Listing.query.get(listing_id)
@@ -167,13 +208,14 @@ def delete_listing(listing_id):
     flash("Listing deleted successfully", category="success")
     return redirect(url_for("seller"))
 
-@app.route('/logout')
+
+@app.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for("home"))
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     
@@ -188,21 +230,21 @@ def login():
         else:
             flash("Invalid email or password.")
     
-    return render_template('login.html', form=form, user=current_user)
+    return render_template("login.html", form=form, user=current_user)
 
 
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
     form = SignUpForm()
     
     if form.validate_on_submit():
         if form.password.data != request.form.get("passwordConfirmation"):
             flash("Passwords do not match.")
-            return redirect('/signup')
+            return redirect("/signup")
         
         if User.query.filter_by(email=form.email.data).first():
             flash("An account with the email already exists.")
-            return redirect('/signup')
+            return redirect("/signup")
                
         name = form.firstName.data.split(" ")
         if len(name) == 1: middleName = None 
@@ -221,7 +263,7 @@ def signup():
         
         return redirect(url_for("home")) 
     
-    return render_template('sign_up.html', form=form, user=current_user)
+    return render_template("sign_up.html", form=form, user=current_user)
 
 
 
