@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+{% include 'nav_bar.html' %}
+<div class="container mt-4">
+    {% if products == None %}
+        <div id="form_template">
+            <h1>My Shopping Cart</h1>
+            <p>Your shopping cart is empty.</p>
+        </div>
+    {% else %}
+        <h1>My Shopping Cart</h1>
+        <div class="row mt-4">
+            <div class="col-md-9">
+                {% for product in products %}
+                    <div class="row" id="form_template">
+                        <div class="col-md-3">
+                            <img src="../static/{{ product.image }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
+                        </div>
+
+                        <div class="col-md-5">
+                            <p><strong>{{ product.name }}</strong><br>
+                            <em>{{ product.description }}</em></p>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            {% if product.in_stock %}
+                                <p style="text-align:right;"> <strong>Price:</strong> £{{ product.price }}<br>
+                                    <strong>Quantity:</strong> {{ product.quantity }}
+                                </p>
+                                <form style="display:flex; justify-content:right;" method="post" action="{{ url_for('deleteFromCart', cart_id=product.cart_id) }}">
+                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                </form> 
+                            {% else %}
+                                <p style="text-align:right;"><strong>Out of Stock</strong></p>
+                            {% endif %}
+                            
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-3" id="form_template" style="text-align:right;">
+                <h1>Summary</h1>
+                <p><strong>{{ total_quantity }}</strong> Item(s)<br>
+                <strong>£{{ total_price }}</strong> inc. vat<br>
+                <strong><em>Free Delivery</em></p>
+                <h2>£{{ total_price }}</h2>
+                <form method="post" action="{{ url_for('checkout') }}">
+                    <button style="margin-top:1em;" type="submit" id="large_button" class="btn btn-primary">Checkout</button>
+                </form>    
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -16,7 +16,7 @@
             {% endwith %}
 
             {% if not seller %}
-            <form id="form_template" action="" method="post">
+            <form id="form_template" action="" method="post" enctype="multipart/form-data">
                 {{ sellerForm.csrf_token }}
                 {{ sellerForm.hidden_tag() }}
                 <h1>Seller Registration</h1>
@@ -61,7 +61,7 @@
                     {% endfor %}
                 </div>
 
-                <button type="submit" class="btn btn-primary">Register as Seller</button>
+                <button type="submit" name="submitSellerRegistration" class="btn btn-primary">Register as Seller</button>
             </form>
 
             {% else %}
@@ -126,9 +126,9 @@
                         </div>
     
                         <div class="form-group">
-                            <h2><label for="image">Product Images</label></h2>
+                            <h2><label for="addImage">Add Images</label></h2>
                             <h2 style="font-size:0.5em; font">
-                                <input type="file" class="form-control-file" id="image" name="image" multiple accept="image/*">
+                                <input type="file" class="form-control-file" id="addImage" name="addImage" multiple accept="addImage/*">
                             </h2>
                             {% for error in listingForm.image.errors %}
                                 <p class="error-message">{{ error }}</p>
@@ -159,13 +159,13 @@
                             <tbody>
                                 {% for listing in listings %}
                                 <tr>
-                                    <td>{{ listing.name }}</td>
-                                    <td>{{ listing.category }}</td>
-                                    <td>${{ listing.price }}</td>
-                                    <td>{{ listing.stock }}</td>
+                                    <td><p>{{ listing.name }}</p></td>
+                                    <td><p>{{ listing.category }}</p></td>
+                                    <td><p>£{{ listing.price }}</p></td>
+                                    <td><p>{{ listing.stock }}</p></td>
                                     <td>
-                                        <form action="{{ url_for('delete_listing', listing_id=listing.product_id) }}" method="post" style="display:inline;">
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this listing?');">Delete</button>
+                                        <form action="{{ url_for('editListing', listing_id=listing.product_id) }}" method="post" style="display:inline;">
+                                            <button type="submit" class="btn btn-info btn-sm" >Edit</button>
                                         </form>
                                     </td>
                                 </tr>

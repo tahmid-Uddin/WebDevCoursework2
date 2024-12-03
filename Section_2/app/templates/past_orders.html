@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include 'nav_bar.html' %}
+    <div class= "container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alter-dismissable fade show" role="alert">{{ message }}
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h1>View Past Order History</h1>
+
+        {% for orderGroup in pastOrders %}
+            <div id="form_template">
+                {% for product in orderGroup %}
+                    {% if product.order_ref %}
+                        <h2>Order Summary - #{{ product.order_ref }}</h2>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-3">
+                            <img src="../static/{{ product.image }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
+                        </div>
+
+                        <div class="col-md-5">
+                            <p><strong>{{ product.name }}</strong><br>
+                            <em>{{ product.description }}</em></p>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <p style="text-align:right;"> <strong>Price:</strong> £{{ product.price }}<br>
+                                <strong>Quantity:</strong> {{ product.quantity }}
+                            </p>                 
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+    
+{% endblock %} 

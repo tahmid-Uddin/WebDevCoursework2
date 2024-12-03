@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+{% include 'nav_bar.html' %}
+<div class="container mt-4">
+    <div>
+        <form id = "form_template"  action="" method="post">
+            {{ form.csrf_token }}
+            {{ form.hidden_tag() }}
+            <h1>Confirm Details</h1>
+            
+            <h2><label for="Name">Full Name</label></h2>
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <input type="text" class="form-control" id="firstName" name="firstName" value="{{ user.first_name }}">
+                    {% for error in form.firstName.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    {% if user.middle_name %}
+                        <input type="text" class="form-control" id="middleName" name="middleName" value="{{ user.middle_name }}">
+                    {% else %}
+                        <input type="text" class="form-control" id="middleName" name="middleName" placeholder="Middle Name">
+                    {% endif %}
+
+                    {% for error in form.middleName.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            
+                <div class="col-md-4 mb-2">
+                    <input type="text" class="form-control" id="lastName" name="lastName" value="{{ user.last_name }}">
+                    {% for error in form.lastName.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <h2><label for="email">Email address</label></h2>
+                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <h2><label for="phoneNumber">Phone Number</label></h2>
+                {% if user.phone_number != None %}
+                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ user.phone_number }}">
+                {% else %}
+                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
+                {% endif %}
+
+                {% for error in form.phoneNumber.errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <h2><label for="address">Delivery Address</label></h2>
+                {% if user.address != None %}
+                    <input type="text" class="form-control" id="address" name="address" value="{{ user.address }}">
+                {% else %}
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Enter Delivery Address">
+                {% endif %}
+
+                {% for error in form.address.errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
+
+                {% if user.postCode %}
+                    <input type="text" class="form-control" id="postCode" name="postCode" value="{{ user.post_code }}">
+                {% else %}
+                    <input type="text" class="form-control" id="postCode" name="postCode" placeholder="Post Code">
+                {% endif %}
+
+                {% for error in form.postCode.errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <button type="submit" name="submitDeliveryDetails" class="btn btn-primary">Purchase Products</button>
+        </form> 
+    </div>
+</div>
+{% endblock %}

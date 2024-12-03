@@ -12,12 +12,10 @@ def ValidateFirstName():
     message = "Name contains invalid characters."
 
     def _ValidateFirstName(form, field):
-        if field.data == None:
-            raise ValidationError(message)
-        
-        #No numbers or punctuation in name
-        if not re.match(r"^[A-Za-z\s]+$", field.data):
-            raise ValidationError(message)
+        if field.data:
+            #No numbers or punctuation in name
+            if not re.match(r"^[A-Za-z\s]+$", field.data):
+                raise ValidationError(message)
         
     return _ValidateFirstName
 
@@ -92,6 +90,38 @@ def ValidateNumber():
     return _ValidateNumber
 
 
+def ValidatePostCodeSupplied():
+    message = "Need to include post code."
+
+    def _ValidatePostCodeSupplied(form, field):
+        # Check if address is provided (not empty after stripping whitespace)
+        if field.data and field.data.strip():
+            # Check if postcode is empty
+            if not form.postCode.data or not form.postCode.data.strip():
+                raise ValidationError(message)
+    
+    return _ValidatePostCodeSupplied
+
+
+def ValidatePostCode():
+    message = "Invalid postcode."
+
+    def _ValidatePostCode(form, field):
+        if field.data:
+            if len(field.data.split(" ")) > 2:
+                raise ValidationError(message)
+            
+            if len(field.data) > 8:
+                raise ValidationError(message)
+            
+            postcode = field.data.split(" ")
+            for section in postcode:
+                if not re.match(r'^[a-zA-Z0-9]+$', section):
+                    raise ValidationError(message)
+        
+    return _ValidatePostCode
+
+
 class SignUpForm(FlaskForm):
     firstName = wtforms.StringField(validators=[DataRequired(), ValidateFirstName()])
     lastName = wtforms.StringField(validators=[DataRequired(), ValidateLastName()])
@@ -110,7 +140,18 @@ class UpdateUserForm(FlaskForm):
     lastName = wtforms.StringField(validators=[DataRequired(), ValidateLastName()])
     phoneNumber = wtforms.StringField(validators=[ValidatePhoneNumber()])
     email = wtforms.StringField(validators=[DataRequired()])
-    address = wtforms.StringField(validators=[])
+    address = wtforms.StringField(validators=[ValidatePostCodeSupplied()])
+    postCode = wtforms.StringField(validators=[ValidatePostCode()])
+    
+    
+class ConfirmDeliveryDetailsForm(FlaskForm):
+    firstName = wtforms.StringField(validators=[DataRequired(), ValidateFirstName()])
+    middleName = wtforms.StringField(validators=[ValidateFirstName()])
+    lastName = wtforms.StringField(validators=[DataRequired(), ValidateLastName()])
+    phoneNumber = wtforms.StringField(validators=[DataRequired(), ValidatePhoneNumber()])
+    email = wtforms.StringField(validators=[DataRequired()])
+    address = wtforms.StringField(validators=[DataRequired(), ValidatePostCodeSupplied()])
+    postCode = wtforms.StringField(validators=[DataRequired(), ValidatePostCode()])
 
 
 class SellerRegistrationForm(FlaskForm):

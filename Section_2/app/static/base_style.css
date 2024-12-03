@@ -18,6 +18,8 @@ body {
 
 h1 {
     margin-bottom:0.5em;
+    font-size:1.2em;
+    color: var(--text_colour);
 }
 
 
@@ -25,7 +27,7 @@ h2 {
     font-family: "Lato", sans-serif;
     font-weight: 800;
     font-size: 1em;
-    color: #3f2a22;
+    color: var(--text_colour);
 }
 
 
@@ -35,8 +37,6 @@ p {
     font-size: 0.7em;
     color: #3f2a22;
 }
-
-
 
 
 .container {

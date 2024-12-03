@@ -21,11 +21,13 @@ class User(UserMixin, db.Model):
     phone_number = db.Column(db.String(15), nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     address = db.Column(db.String(300), nullable=True)
+    post_code = db.Column(db.String(10), nullable=True)
     password_hash = db.Column(db.String(128))
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
     
-    seller_profile = db.relationship("Seller", backref="user", uselist=False)
+    seller = db.relationship("Seller", backref="user", uselist=False)
     cart = db.relationship("Cart", backref="user", uselist=False)
+    orders = db.relationship("Orders", backref="user", lazy="dynamic")
     
 class Seller(db.Model):   
     id = db.Column(db.Integer, primary_key=True)
@@ -36,9 +38,10 @@ class Seller(db.Model):
     business_email = db.Column(db.String(120), nullable=False)
     business_address = db.Column(db.String(300), nullable=False)
     country = db.Column(db.String(50), nullable=False)
-    
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
-    listing = db.relationship("Listing", backref="listing", lazy="dynamic")
+    
+    listings = db.relationship("Listing", backref="seller", lazy="dynamic")  # plural since one-to-many
+    orders = db.relationship("Orders", backref="seller", lazy="dynamic")
     
     
 class Listing(db.Model):
@@ -50,9 +53,9 @@ class Listing(db.Model):
     price = db.Column(db.Float, nullable=False)
     category = db.Column(db.String(50), nullable=False)
     
-    
-    image = db.relationship("Image", backref="image", lazy="dynamic")
-    cart = db.relationship("Cart", backref="cart", lazy="dynamic")
+    images = db.relationship("Image", backref="image", lazy="dynamic")  # plural since one-to-many
+    cart_items = db.relationship("Cart", backref="cart", lazy="dynamic")
+    orders = db.relationship("Orders", backref="order", lazy="dynamic")
 
 
 class Image(db.Model):
@@ -64,7 +67,16 @@ class Image(db.Model):
 
 class Cart(db.Model):
     cart_id = db.Column(db.Integer, primary_key=True)
-    id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey("listing.product_id"), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False, default=1)
+    quantity = db.Column(db.Integer, nullable=False)
+    
+    
+class Orders(db.Model):
+    order_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey("listing.product_id"), nullable=False)
+    seller_id = db.Column(db.Integer, db.ForeignKey("seller.id"), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    order_time = db.Column(db.DateTime, nullable=False)
 
