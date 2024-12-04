@@ -38,7 +38,7 @@
         <div class="carousel-inner">
             {% for image in product.images %}
             <div class="carousel-item {{ 'active' if loop.index == 1 else ''}}" style="height: 25em; overflow: hidden; border:1em; background-color:#56355a;">
-                <img src="../static/{{ image }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
+                <img src="{{ url_for('renderImage', image_id=image) }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
             </div>
             {% endfor %}
         </div>

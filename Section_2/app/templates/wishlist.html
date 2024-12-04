@@ -36,7 +36,7 @@
                     <div id="form_template">
                         <div class="row">
                             <div class="col-md-3">
-                                <img src="../static/{{ product.image }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
+                                <img src="{{ url_for('renderImage', image_id=product.image) }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
                             </div>
 
                             <div class="col-md-5">

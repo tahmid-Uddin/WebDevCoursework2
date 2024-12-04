@@ -42,7 +42,7 @@
 
                 <a href="{{ url_for('listingPage', listing_id=product.product_id) }}" style="text-decoration: none;">
                     <div style="height: 6em; overflow: hidden; margin:0.2em;">
-                        <img src="../static/{{ product.images[0] }}" class="card-img-top" alt="{{ product.name }}" id="image_fit">
+                        <img src="{{ url_for('renderImage', image_id=product.images[0]) }}" class="card-img-top" alt="{{ product.name }}" id="image_fit">
                     </div>
                     <div class="card-body">
                         <h2>

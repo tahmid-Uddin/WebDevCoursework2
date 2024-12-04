@@ -75,7 +75,7 @@
                 {% for image in images %}
                     <div class="col-sm-6 col-md-4 col-lg-3 mb-3 text-center">
                         <div class="border p-2">
-                            <img src="../static/{{ image.url }}" alt="{{ listing.name }}" class="img-fluid rounded" style="max-height: 150px;">
+                            <img src="{{ url_for('renderImage', image_id=image.id) }}" alt="{{ listing.name }}" class="img-fluid rounded" style="max-height: 150px;">
                             <div class="form-check mt-2"><p>
                                 <input type="checkbox" class="form-check-input" id="removeImage{{ image.id }}" name="removeImages" value="{{ image.id }}" style="display:inline;">
                                 <label class="form-check-label" for="removeImage{{ image.id }}">Remove</label>

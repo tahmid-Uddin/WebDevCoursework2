@@ -35,7 +35,11 @@
                         {% endif %}
                         <div class="row">
                             <div class="col-md-3">
-                                <img src="../static/{{ product.image }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
+                                {% if product.image == "no_image" %}
+                                    <img src="../static/product_images/no_image.jpg" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
+                                {% else %}
+                                    <img src="{{ url_for('renderImage', image_id=product.image) }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
+                                {% endif %}
                             </div>
 
                             <div class="col-md-5">

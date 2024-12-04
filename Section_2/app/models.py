@@ -59,7 +59,9 @@ class Listing(db.Model):
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey("listing.product_id"), nullable=False)
-    url = db.Column(db.String(500), nullable=False)
+    img = db.Column(db.LargeBinary, unique=True, nullable=False)
+    filename = db.Column(db.String(50), nullable=False)
+    mimetype = db.Column(db.Text, nullable=False)
     
 
 

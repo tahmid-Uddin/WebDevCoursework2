@@ -4,7 +4,7 @@ from flask import render_template, flash, request, redirect, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_wtf.csrf import generate_csrf
-
+from flask import send_file
 
 from .models import User, Listing, Image, Cart, Seller, wishlist_table, Orders
 from .forms import SignUpForm, LoginForm, UpdateUserForm, SellerRegistrationForm, CreateListingForm, ConfirmDeliveryDetailsForm
@@ -12,7 +12,7 @@ from .forms import SignUpForm, LoginForm, UpdateUserForm, SellerRegistrationForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
-import os
+import io
 import datetime
 import json
 
@@ -54,11 +54,17 @@ def getProducts(category):
         
         images = Image.query.filter_by(product_id=listing.product_id).all()
         for image in images:
-            product["images"].append(image.url)
+            product["images"].append(image.id)
             
         products.append(product)
     
     return products
+
+
+@app.route('/image/<int:image_id>')
+def renderImage(image_id):
+    image = Image.query.get_or_404(image_id)
+    return send_file(io.BytesIO(image.img), mimetype=image.mimetype, as_attachment=False, download_name=image.filename)
 
 
 def searchListings(category, productsList, searchTerm,):
@@ -167,7 +173,7 @@ def listingPage(listing_id):
     
     images = Image.query.filter_by(product_id=listing.product_id).all()
     for image in images:
-        product["images"].append(image.url)     
+        product["images"].append(image.id)     
 
     # Wishlist should only be available for logged in users.
     # Used to change state of wishlist "heart" icon - red and filled if
@@ -207,7 +213,7 @@ def wishlist():
         # to the listing page for the product.
         image = Image.query.filter_by(product_id=listing.product_id).first()
         
-        product["image"] = (image.url)
+        product["image"] = (image.id)
         products.append(product)
 
         
@@ -271,7 +277,7 @@ def cart():
                     "image": None}
             
             image = Image.query.filter_by(product_id=listing.product_id).first()
-            product["image"] = (image.url)
+            product["image"] = (image.id)
             products.append(product)
         
         total_price = sum([product["total_price"] for product in products if product["in_stock"]])
@@ -492,9 +498,10 @@ def pastOrders():
             try:
                 listing = Listing.query.filter_by(name=order.product_name, description=order.product_description, price=order.product_price, created_at=order.product_created_at).first()
                 image = Image.query.filter_by(product_id=listing.product_id).first()
-                product["image"] = (image.url)
+                product["image"] = (image.id)
             except:
-                product["image"] = "product_images/no_image.jpg"
+                
+                product["image"] = "no_image"
             
             # Used to display the order reference - only done once for each order group, as the reference
             # (time of order) is the same for a particular order group
@@ -611,24 +618,20 @@ def seller():
                 
                 # Save images to app/static/product_images       
                 if images:
-                    upload_dir = os.path.join("app", "static", "product_images")
-
-                    if not os.path.exists(upload_dir):
-                        os.makedirs(upload_dir)
-
                     for file in images:
                         # Ensure the file is valid
                         if file and file.filename:  
                             filename = secure_filename(file.filename)
                             
                             # Confirm filename isn't empty after securing - passes security check
-                            if filename:  
-                                file_path = os.path.join(upload_dir, filename)
-                                
+                            if filename:
+                                mimetype = file.mimetype                                  
                                 try:
-                                    file.save(file_path)
+                                    
                                     new_image = Image(product_id=new_listing.product_id,
-                                                    url=os.path.join("product_images", filename))
+                                                      img=file.read(),
+                                                      mimetype=mimetype,
+                                                      filename=filename)
                                     db.session.add(new_image)
                                     db.session.commit()   
                                                                  
@@ -696,10 +699,6 @@ def editListing(listing_id):
                         if ext not in {"png", "jpg", "jpeg"}:
                             flash("Error - invalid image format.", category="error")
                             return redirect(url_for("seller"))
-                        
-                upload_dir = os.path.join("app", "static", "product_images")
-                if not os.path.exists(upload_dir):
-                    os.makedirs(upload_dir)
 
                 for file in images:
                     # Ensure the file is valid
@@ -707,15 +706,15 @@ def editListing(listing_id):
                         filename = secure_filename(file.filename)
                         
                         # Confirm filename isn't empty - passes security check
-                        if filename:  
-                            file_path = os.path.join(upload_dir, filename)
-                            
+                        if filename:                              
+                            mimetype = file.mimetype                                  
                             try:
-                                file.save(file_path)
                                 new_image = Image(product_id=listing.product_id,
-                                                  url=os.path.join("product_images", filename))
+                                                    img=file.read(),
+                                                    mimetype=mimetype,
+                                                    filename=filename)
                                 db.session.add(new_image)
-                                db.session.commit()
+                                db.session.commit() 
                                 
                             except:
                                 flash(f"Error saving image {filename}", category="error")
