@@ -2,6 +2,8 @@
 
 {% block content %}
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 {% include 'nav_bar.html' %}
     <div class= "container">
         <div>

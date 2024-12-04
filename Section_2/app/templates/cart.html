@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'nav_bar.html' %}
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <div class="container mt-4">
     {% if products == None %}
         <div id="form_template">
@@ -33,7 +36,6 @@
                             {% else %}
                                 <p style="text-align:right;"><strong>Out of Stock</strong></p>
                             {% endif %}
-                            
                         </div>
                     </div>
                 {% endfor %}
@@ -46,6 +48,7 @@
                 <strong><em>Free Delivery</em></p>
                 <h2>£{{ total_price }}</h2>
                 <form method="post" action="{{ url_for('checkout') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button style="margin-top:1em;" type="submit" id="large_button" class="btn btn-primary">Checkout</button>
                 </form>    
             </div>

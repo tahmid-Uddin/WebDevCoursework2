@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 {% include 'nav_bar.html' %}
     <div class= "container">
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -13,34 +11,48 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
+        
+        <div id="form_template">
+            <a class="nav-link" href="/account" style="text-decoration:none;"> 
+                <button type="button" name="goBack" id="large_button" class="btn btn-primary">Back to Account</button>
+            </a>
+        </div>
 
-        <h1>View Past Order History</h1>
-
-        {% for orderGroup in pastOrders %}
+        {% if pastOrders == [] %}
+        <div id="form_template">
+            <h1>View Order History</h1>
+            <p>You have not ordered anything in the past.</p>
+        </div>
+        {% else %}
             <div id="form_template">
-                {% for product in orderGroup %}
-                    {% if product.order_ref %}
-                        <h2>Order Summary - #{{ product.order_ref }}</h2>
-                    {% endif %}
-                    <div class="row">
-                        <div class="col-md-3">
-                            <img src="../static/{{ product.image }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
-                        </div>
-
-                        <div class="col-md-5">
-                            <p><strong>{{ product.name }}</strong><br>
-                            <em>{{ product.description }}</em></p>
-                        </div>
-                        
-                        <div class="col-md-4">
-                            <p style="text-align:right;"> <strong>Price:</strong> £{{ product.price }}<br>
-                                <strong>Quantity:</strong> {{ product.quantity }}
-                            </p>                 
-                        </div>
-                    </div>
-                {% endfor %}
+                <h1 style="text-align:center;">View Order History</h1>
             </div>
-        {% endfor %}
+            {% for orderGroup in pastOrders %}
+                <div id="form_template">
+                    {% for product in orderGroup %}
+                        {% if product.order_ref %}
+                            <h2>Order Summary - #{{ product.order_ref }}</h2>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img src="../static/{{ product.image }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
+                            </div>
+
+                            <div class="col-md-5">
+                                <p><strong>{{ product.name }}</strong><br>
+                                <em>{{ product.description }}</em></p>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <p style="text-align:right;"> <strong>Price:</strong> £{{ product.price }}<br>
+                                    <strong>Quantity:</strong> {{ product.quantity }}
+                                </p>                 
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 
     

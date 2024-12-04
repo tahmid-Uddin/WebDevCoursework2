@@ -6,3 +6,7 @@ DROP TABLE image;
 DROP TABLE cart;
 DROP TABLE wishlist_table;
 DROP TABLE seller;
+DROP TABLE orders;
+
+PRAGMA foreign_keys = ON;
+PRAGMA foreign_keys = OFF;

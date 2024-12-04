@@ -1,32 +1,67 @@
 {% extends "base.html" %}
 {% block content %}
-    {% include 'nav_bar.html' %}
-    <div class="container mt-4">
-        <div class="row">
-            {% for product in products %}
-            <div class="col-lg-4 col-md-6 mb-4">
-                <a href="{{ url_for('listingPage', listing_id=product.product_id) }}" style="text-decoration: none;">
-                    <div class="card h-100" id="card">
-                        <div style="height: 6em; overflow: hidden; margin:0.2em;">
-                            <img src="../static/{{ product.images[0] }}" class="card-img-top" alt="{{ product.name }}" id="image_fit">
-                        </div>
-                        <div class="card-body" >
-                            <h2>
-                                {{ product.name }}
-                                <div class="ml-auto">
-                                    {% if product.in_stock %}
-                                        <span class="badge badge-success ml-auto">In Stock</span>
-                                    {% else %}
-                                        <span class="badge badge-danger ml-auto">Out of Stock</span>
-                                    {% endif %}
-                                </div>
-                            </h2>
-                            <p>Price: £{{ product.price }}</p>
-                        </div>
+{% include 'nav_bar.html' %}
+
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='toggle_wishlist.js') }}" ></script> 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
+<div class="container mt-4">
+
+    <h1>{{ title }}</h1>
+
+    <form class="form-inline" style="display:flex; justify-content:center;margin-bottom:1em;" method="POST" id="form_template">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input class="form-control mr-sm-2" name="search" style="width:70%;" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" name="submitSearch" type="submit">Search</button>
+    </form>
+
+    
+    <div class="row">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alter-dismissable fade show" role="alert">{{ message }}
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
                     </div>
-                </a>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% for product in products %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div id="card" class="card h-100">
+                {% if current_user.is_authenticated %}
+                    <a class="wishlist" id="{{ product.product_id }}" style="position: absolute; top: 10px; right: 10px; cursor: pointer;">
+                        <i class="fas fa-heart {% if product.product_id in userWishlist %}text-danger{% else %}text-secondary{% endif %}" id="heart"></i>
+                    </a>
+                {% endif %}
+
+                <a href="{{ url_for('listingPage', listing_id=product.product_id) }}" style="text-decoration: none;">
+                    <div style="height: 6em; overflow: hidden; margin:0.2em;">
+                        <img src="../static/{{ product.images[0] }}" class="card-img-top" alt="{{ product.name }}" id="image_fit">
+                    </div>
+                    <div class="card-body">
+                        <h2>
+                            {{ product.name }}
+                            <div class="ml-auto">
+                                {% if product.in_stock %}
+                                    <span class="badge badge-success ml-auto">In Stock</span>
+                                {% else %}
+                                    <span class="badge badge-danger ml-auto">Out of Stock</span>
+                                {% endif %}
+                            </div>
+                        </h2>
+                        <p>Price: £{{ product.price }}</p>
+                    </div>
+                </a>  
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
+</div>
+
 {% endblock %}

@@ -3,6 +3,8 @@
 {% block content %}
 {% include 'nav_bar.html' %}
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <div class= "container">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -14,7 +16,12 @@
         {% endif %}
     {% endwith %}
 
-    
+    <div id="form_template">
+        <a class="nav-link" href="/seller" style="text-decoration:none;"> 
+            <button type="button" name="goBack" id="large_button" class="btn btn-primary">Back to Dashboard</button>
+        </a>
+    </div>
+
     <form action="" method="post" id="form_template" enctype="multipart/form-data">
         {{ form.csrf_token }}
         {{ form.hidden_tag() }}
@@ -91,12 +98,8 @@
         
         <button type="submit" name="updateListing" class="btn btn-primary">Update Listing</button>
 
-        <a class="nav-link" href="/seller" style="text-decoration:none; display:inline;"> 
-            <button type="button" name="goBack" class="btn btn-primary">Back to Dashboard</button>
-        </a>
-
         <a class="nav-link" href="{{ url_for('deleteListing', listing_id=listing.product_id) }}" style="text-decoration:none; display:inline; padding-left:0;">
-            <button type="sk " class="btn btn-danger" name="deleteListing" onclick="return confirm('Are you sure you want to delete this listing?');">Delete</button>
+            <button type="button" class="btn btn-danger" name="deleteListing" onclick="return confirm('Are you sure you want to delete this listing?');">Delete</button>
         </a>
     </form>
     

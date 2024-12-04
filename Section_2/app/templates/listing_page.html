@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'nav_bar.html' %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='toggle_wishlist.js') }}" ></script> 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <div class="container mt-4" id="form_template">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -13,9 +21,20 @@
     {% endwith %}
         
         
-    <h1>{{ product.name }}</h1>
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+        <h1 style="margin: 0;">
+            {{ product.name }}
+        </h1>
+        {% if current_user.is_authenticated %}
+            <a class="wishlist" id="{{ product.product_id }}" style="cursor: pointer; text-decoration: none;">
+                <i class="fas fa-heart {% if product.product_id in userWishlist %}text-danger{% else %}text-secondary{% endif %}" id="heart"></i>
+            </a>
+        {% endif %}
+    </div>
+
     
     <div id="imageSlideShow" class="carousel slide" data-ride="carousel">
+        
         <div class="carousel-inner">
             {% for image in product.images %}
             <div class="carousel-item {{ 'active' if loop.index == 1 else ''}}" style="height: 25em; overflow: hidden; border:1em; background-color:#56355a;">
@@ -63,6 +82,7 @@
 
                             {% if user.is_authenticated %}
                                 <form method="POST" action="{{ url_for('addToCart', listing_id=product.product_id)}}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <div class="form-group mt-3" style="padding:0;">
                                         <select class="form-control" id="quantity" name="quantity">
                                             {% for i in range(1, product.quantity + 1) %}
@@ -76,6 +96,7 @@
                                 </form>
                             {% else %}
                                 <form action="{{ url_for('login') }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" name="sendToLogin"  class="btn btn-primary" style="width:100%; font-size:0.8em; margin-top:0.7em;">Login to Buy</button>
                                 </form>
                             {% endif %}
@@ -85,11 +106,6 @@
                         {% endif %}
                     </div>
                     
-                    {% if user.is_authenticated %}
-                        <form method="POST" action="">
-                            <button type="submit" name="addToWishlist" class="btn btn-primary" style="width:100%; font-size:0.8em; margin-top:0.7em;">Add to Wishlist</button>
-                        </form>
-                    {% endif %}
                 </div>
             </div>
         </div>

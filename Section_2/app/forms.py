@@ -19,6 +19,7 @@ def ValidateFirstName():
         
     return _ValidateFirstName
 
+
 def ValidateLastName():
     message = "Name contains invalid characters."
 
@@ -57,11 +58,12 @@ def ValidatePhoneNumber():
 
 
 def ValidatePassword():
-    #Exampl3P@ssw0rd!
     message = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character."
 
     def _ValidatePassword(form, field):
         password = field.data
+        #Password to have atlest one uppercase letter, one lowercase letter, one number, and one special character
+        #and be more than 7 characters long
         if (len(password) < 8 or
             not re.search(r'[A-Z]', password) or
             not re.search(r'[a-z]', password) or 
@@ -69,13 +71,11 @@ def ValidatePassword():
             not re.search(r'[!@#$%^&*(),.?":{}|<>]', password)): 
             raise ValidationError(message)
         
-
     return _ValidatePassword
 
 
 def ValidateNumber():
-    #Exampl3P@ssw0rd!
-    message = "Number can't be negative."
+    message = "Invalid number entered."
 
     def _ValidateNumber(form, field):
         try:
@@ -95,8 +95,9 @@ def ValidatePostCodeSupplied():
 
     def _ValidatePostCodeSupplied(form, field):
         # Check if address is provided (not empty after stripping whitespace)
+        # No errors raised if empty, as address is optional
         if field.data and field.data.strip():
-            # Check if postcode is empty
+            # Can't have an address without postcode
             if not form.postCode.data or not form.postCode.data.strip():
                 raise ValidationError(message)
     
@@ -108,12 +109,15 @@ def ValidatePostCode():
 
     def _ValidatePostCode(form, field):
         if field.data:
+            # Can't have more than 2 parts in the postcode
             if len(field.data.split(" ")) > 2:
                 raise ValidationError(message)
             
+            # Longest postcode is 8 characters in the UK
             if len(field.data) > 8:
                 raise ValidationError(message)
             
+            # All postcodes have to be alphanumeric
             postcode = field.data.split(" ")
             for section in postcode:
                 if not re.match(r'^[a-zA-Z0-9]+$', section):

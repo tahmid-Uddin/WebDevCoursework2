@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'nav_bar.html' %}
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <div class="container mt-4">
     <div>
         <form id = "form_template"  action="" method="post">
@@ -58,7 +61,7 @@
 
             <div class="form-group">
                 <h2><label for="address">Delivery Address</label></h2>
-                {% if user.address != None %}
+                {% if user.address %}
                     <input type="text" class="form-control" id="address" name="address" value="{{ user.address }}">
                 {% else %}
                     <input type="text" class="form-control" id="address" name="address" placeholder="Enter Delivery Address">
@@ -68,7 +71,7 @@
                     <p class="error-message">{{ error }}</p>
                 {% endfor %}
 
-                {% if user.postCode %}
+                {% if user.post_code %}
                     <input type="text" class="form-control" id="postCode" name="postCode" value="{{ user.post_code }}">
                 {% else %}
                     <input type="text" class="form-control" id="postCode" name="postCode" placeholder="Post Code">

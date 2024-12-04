@@ -2,10 +2,7 @@ from app import db
 import datetime
 from flask_login import UserMixin
 
-# Many-Many relationship: user - listing through wishlist association table
-# One-Many relationship: listing->cart, listing->images user->listing
-# One-One relationsihp: user->cart
-
+#Association table for user and product, many to many relationship
 wishlist_table = db.Table(
     "wishlist_table",
     db.Model.metadata,
@@ -28,6 +25,7 @@ class User(UserMixin, db.Model):
     seller = db.relationship("Seller", backref="user", uselist=False)
     cart = db.relationship("Cart", backref="user", uselist=False)
     orders = db.relationship("Orders", backref="user", lazy="dynamic")
+    
     
 class Seller(db.Model):   
     id = db.Column(db.Integer, primary_key=True)
@@ -52,10 +50,10 @@ class Listing(db.Model):
     stock = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
     category = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
     
-    images = db.relationship("Image", backref="image", lazy="dynamic")  # plural since one-to-many
-    cart_items = db.relationship("Cart", backref="cart", lazy="dynamic")
-    orders = db.relationship("Orders", backref="order", lazy="dynamic")
+    images = db.relationship("Image", backref="image", lazy="dynamic") 
+    cart = db.relationship("Cart", backref="cart", lazy="dynamic")
 
 
 class Image(db.Model):
@@ -75,8 +73,12 @@ class Cart(db.Model):
 class Orders(db.Model):
     order_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey("listing.product_id"), nullable=False)
     seller_id = db.Column(db.Integer, db.ForeignKey("seller.id"), nullable=False)
+    
+    product_name = db.Column(db.String(500), nullable=False)
+    product_description = db.Column(db.Text, nullable=False)
+    product_price = db.Column(db.Float, nullable=False)
+    product_created_at = db.Column(db.DateTime, default=datetime.datetime.now())
     quantity = db.Column(db.Integer, nullable=False)
     order_time = db.Column(db.DateTime, nullable=False)
 

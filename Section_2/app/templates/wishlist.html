@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include 'nav_bar.html' %}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <div class= "container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alter-dismissable fade show" role="alert">{{ message }}
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div id="form_template">
+            <a class="nav-link" href="/account" style="text-decoration:none;"> 
+                <button type="button" name="goBack" id="large_button" class="btn btn-primary">Back to Account</button>
+            </a>
+        </div>
+
+        {% if wishlist == [] %}
+        <div id="form_template">
+            <h1>Wishlist</h1>
+            <p>You have not wishlisted any items.</p>
+        </div>
+        {% else %}
+            <div id="form_template">
+                <h1 style="text-align:center;">Wishlist</h1>
+            </div>
+            
+            {% for product in wishlist %}
+                <a href="{{ url_for('listingPage', listing_id=product.product_id) }}" style="text-decoration: none;">
+                    <div id="form_template">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img src="../static/{{ product.image }}" alt="{{ product.name }}" id="image_fit" class="d-block w-100">
+                            </div>
+
+                            <div class="col-md-5">
+                                <p><strong>{{ product.name }}</strong><br>
+                                <em>{{ product.description }}</em></p>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <p style="text-align:right;"> <strong>Price:</strong> £{{ product.price }} <br>
+                                    <h2 style="text-align:right;">
+                                    {% if product.in_stock %}
+                                        <span class="badge badge-success ml-auto">In Stock</span>
+                                    {% else %}
+                                        <span class="badge badge-danger ml-auto">Out of Stock</span>
+                                    {% endif %}
+                                    </h2>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+            
+        {% endif %}
+    </div>
+
+    
+{% endblock %} 
